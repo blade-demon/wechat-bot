@@ -6,6 +6,8 @@ const {
 
 const qrcodeTerminal = require('qrcode-terminal')
 
+const RoomName = "gamepoch-test";
+
 Wechaty.instance() // Singleton
   .on('scan', (url, code) => {
     if (!/201|200/.test(String(code))) {
@@ -40,13 +42,15 @@ Wechaty.instance() // Singleton
       return
     }
 
+    // 输入hello就回复以下内容
     if (/hello/.test(content)) {
       m.say("hello how are you")
     }
 
+    // 在房间中输入room，自动回复“welcome ...”
     if (/room/.test(content)) {
       let keyroom = await Room.find({
-        topic: "gamepoch-test"
+        topic: RoomName
       })
       if (keyroom) {
         await keyroom.add(contact)
@@ -54,9 +58,11 @@ Wechaty.instance() // Singleton
       }
     }
 
+    // 在房间中输入out就将人踢出群
     if (/out/.test(content)) {
       let keyroom = await Room.find({
-        topic: "gamepoch-test"
+        topic: RoomName
+
       })
       if (keyroom) {
         await keyroom.say("Remove from the room", contact)
@@ -64,6 +70,4 @@ Wechaty.instance() // Singleton
       }
     }
   })
-
-
   .start()
